@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/webserver.dir/src/core/main.cpp.o CMakeFiles/webserver.dir/src/core/Server.cpp.o CMakeFiles/webserver.dir/src/http/HttpRequest.cpp.o CMakeFiles/webserver.dir/src/http/HttpParser.cpp.o -o webserver 
