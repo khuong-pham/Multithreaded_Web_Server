@@ -10,6 +10,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/khuong/Backend/Project/Multithreaded_Server/src/core/Server.cpp" "CMakeFiles/webserver.dir/src/core/Server.cpp.o" "gcc" "CMakeFiles/webserver.dir/src/core/Server.cpp.o.d"
   "/home/khuong/Backend/Project/Multithreaded_Server/src/core/main.cpp" "CMakeFiles/webserver.dir/src/core/main.cpp.o" "gcc" "CMakeFiles/webserver.dir/src/core/main.cpp.o.d"
+  "/home/khuong/Backend/Project/Multithreaded_Server/src/handlers/FileHandler.cpp" "CMakeFiles/webserver.dir/src/handlers/FileHandler.cpp.o" "gcc" "CMakeFiles/webserver.dir/src/handlers/FileHandler.cpp.o.d"
   "/home/khuong/Backend/Project/Multithreaded_Server/src/http/HttpParser.cpp" "CMakeFiles/webserver.dir/src/http/HttpParser.cpp.o" "gcc" "CMakeFiles/webserver.dir/src/http/HttpParser.cpp.o.d"
   "/home/khuong/Backend/Project/Multithreaded_Server/src/http/HttpRequest.cpp" "CMakeFiles/webserver.dir/src/http/HttpRequest.cpp.o" "gcc" "CMakeFiles/webserver.dir/src/http/HttpRequest.cpp.o.d"
   )

@@ -85,6 +85,51 @@ rebuild_cache:
 rebuild_cache/fast: rebuild_cache
 .PHONY : rebuild_cache/fast
 
+# Special rule for the target list_install_components
+list_install_components:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Available install components are: \"Unspecified\""
+.PHONY : list_install_components
+
+# Special rule for the target list_install_components
+list_install_components/fast: list_install_components
+.PHONY : list_install_components/fast
+
+# Special rule for the target install
+install: preinstall
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Install the project..."
+	/usr/bin/cmake -P cmake_install.cmake
+.PHONY : install
+
+# Special rule for the target install
+install/fast: preinstall/fast
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Install the project..."
+	/usr/bin/cmake -P cmake_install.cmake
+.PHONY : install/fast
+
+# Special rule for the target install/local
+install/local: preinstall
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing only the local directory..."
+	/usr/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
+.PHONY : install/local
+
+# Special rule for the target install/local
+install/local/fast: preinstall/fast
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing only the local directory..."
+	/usr/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
+.PHONY : install/local/fast
+
+# Special rule for the target install/strip
+install/strip: preinstall
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing the project stripped..."
+	/usr/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
+.PHONY : install/strip
+
+# Special rule for the target install/strip
+install/strip/fast: preinstall/fast
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing the project stripped..."
+	/usr/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
+.PHONY : install/strip/fast
+
 # The main all target
 all: cmake_check_build_system
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/khuong/Backend/Project/Multithreaded_Server/build/CMakeFiles /home/khuong/Backend/Project/Multithreaded_Server/build//CMakeFiles/progress.marks
@@ -177,6 +222,30 @@ src/core/main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/webserver.dir/build.make CMakeFiles/webserver.dir/src/core/main.cpp.s
 .PHONY : src/core/main.cpp.s
 
+src/handlers/FileHandler.o: src/handlers/FileHandler.cpp.o
+.PHONY : src/handlers/FileHandler.o
+
+# target to build an object file
+src/handlers/FileHandler.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/webserver.dir/build.make CMakeFiles/webserver.dir/src/handlers/FileHandler.cpp.o
+.PHONY : src/handlers/FileHandler.cpp.o
+
+src/handlers/FileHandler.i: src/handlers/FileHandler.cpp.i
+.PHONY : src/handlers/FileHandler.i
+
+# target to preprocess a source file
+src/handlers/FileHandler.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/webserver.dir/build.make CMakeFiles/webserver.dir/src/handlers/FileHandler.cpp.i
+.PHONY : src/handlers/FileHandler.cpp.i
+
+src/handlers/FileHandler.s: src/handlers/FileHandler.cpp.s
+.PHONY : src/handlers/FileHandler.s
+
+# target to generate assembly for a file
+src/handlers/FileHandler.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/webserver.dir/build.make CMakeFiles/webserver.dir/src/handlers/FileHandler.cpp.s
+.PHONY : src/handlers/FileHandler.cpp.s
+
 src/http/HttpParser.o: src/http/HttpParser.cpp.o
 .PHONY : src/http/HttpParser.o
 
@@ -232,6 +301,10 @@ help:
 	@echo "... clean"
 	@echo "... depend"
 	@echo "... edit_cache"
+	@echo "... install"
+	@echo "... install/local"
+	@echo "... install/strip"
+	@echo "... list_install_components"
 	@echo "... rebuild_cache"
 	@echo "... webserver"
 	@echo "... src/core/Server.o"
@@ -240,6 +313,9 @@ help:
 	@echo "... src/core/main.o"
 	@echo "... src/core/main.i"
 	@echo "... src/core/main.s"
+	@echo "... src/handlers/FileHandler.o"
+	@echo "... src/handlers/FileHandler.i"
+	@echo "... src/handlers/FileHandler.s"
 	@echo "... src/http/HttpParser.o"
 	@echo "... src/http/HttpParser.i"
 	@echo "... src/http/HttpParser.s"

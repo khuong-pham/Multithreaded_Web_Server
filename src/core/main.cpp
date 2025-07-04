@@ -44,9 +44,9 @@ int main(int argc, char* argv[]) {
         signal(SIGINT, signalHandler);   // Ctrl+C
         signal(SIGTERM, signalHandler);  // Termination signal
         
-        std::cout << "\n🚀 Starting server..." << std::endl;
-        std::cout << "📝 Open your browser and go to: http://localhost:" << port << std::endl;
-        std::cout << "⏹️  Press Ctrl+C to stop the server\n" << std::endl;
+        std::cout << "\n Starting server..." << std::endl;
+        std::cout << " Open your browser and go to: http://localhost:" << port << std::endl;
+        std::cout << "  Press Ctrl+C to stop the server\n" << std::endl;
         
         // Start the server (blocking call)
         server.start();

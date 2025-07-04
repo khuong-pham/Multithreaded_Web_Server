@@ -1,6 +1,6 @@
 #include "Server.h"
 
-Server::Server(int port) : port(port), running(false), server_socket(-1) {
+Server::Server(int port) : port(port), running(false), server_socket(-1), file_handler("./public") {
     std::cout << "[Server] Initializing server on port " << port << std::endl;
 }
 
@@ -130,6 +130,11 @@ void Server::handleClient(int client_socket) {
             send(client_socket, error_response.c_str(), error_response.length(), 0);
         }
     }
+    else {
+        std::cout << "[Server] No data received from client" << std::endl;
+    }
+
+
             
     // Close client connection
     close(client_socket);
@@ -141,16 +146,17 @@ std::string Server::routeRequest(const HttpRequest& request)
     std::string path = request.getPath();
     std::cout <<"[Server] Routing request to path: " << path << std::endl;  
 
-    if(path == "/" || path == "/index.html")
-    {
+    if (file_handler.canServeFile(path)) {
+        std::cout << "[Server] Serving file for path: " << path << std::endl;
+        return file_handler.serveFile(path);
+    }
+    
+    // Fallback to hardcoded routes for special pages
+    if (path == "/about") {
+        return createAboutPageResponse(); 
+    } else if (path == "/") {
         return createHomePageResponse();
-    } 
-    else if(path == "/about")
-    {
-        return createAboutPageResponse();
-    } 
-    else {
-        // 404 Not Found
+    } else {
         return createErrorResponse(404, "Not Found");
     }
 }

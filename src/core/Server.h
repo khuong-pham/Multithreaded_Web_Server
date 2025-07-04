@@ -12,6 +12,7 @@
 #include <stdexcept>
 #include "HttpRequest.h"
 #include "HttpParser.h"
+#include "FileHandler.h"
 
 class Server {
 private:
@@ -19,6 +20,8 @@ private:
     int port;
     struct sockaddr_in server_addr;
     bool running;
+    FileHandler file_handler;  // Add file handler
+
     
     // Helper methods
     void setupSocket();

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multithreaded Web Server - C++17</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚀</text></svg>">
+</head>
+<body>
+    <div class="stars"></div>
+    <div class="twinkling"></div>
+    
+    <header class="hero-section">
+        <div class="container">
+            <div class="hero-content">
+                <div class="server-status">
+                    <span class="status-dot"></span>
+                    <span>Server Online</span>
+                </div>
+                
+                <h1 class="hero-title">
+                    <span class="emoji">🚀</span>
+                    Multithreaded Web Server
+                    <span class="version">v1.0</span>
+                </h1>
+                
+                <p class="hero-subtitle">
+                    High-performance HTTP server built from scratch with <strong>C++17</strong>
+                </p>
+                
+                <div class="tech-stack">
+                    <span class="tech-badge">C++17</span>
+                    <span class="tech-badge">TCP Sockets</span>
+                    <span class="tech-badge">HTTP/1.1</span>
+                    <span class="tech-badge">Static Files</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <nav class="navigation">
+        <div class="container">
+            <div class="nav-content">
+                <a href="/" class="nav-link active">
+                    <span class="nav-icon">🏠</span>
+                    Home
+                </a>
+                <a href="/about" class="nav-link">
+                    <span class="nav-icon">ℹ️</span>
+                    About
+                </a>
+                <a href="/demo" class="nav-link">
+                    <span class="nav-icon">🧪</span>
+                    Demo
+                </a>
+                <a href="/status" class="nav-link">
+                    <span class="nav-icon">📊</span>
+                    Status
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="container">
+            <!-- Feature Showcase -->
+            <section class="features-section">
+                <h2 class="section-title">✨ Features Implemented</h2>
+                
+                <div class="features-grid">
+                    <div class="feature-card completed">
+                        <div class="feature-icon">🔗</div>
+                        <h3>TCP Socket Programming</h3>
+                        <p>Low-level network communication using POSIX sockets</p>
+                        <div class="status-badge completed">✅ Complete</div>
+                    </div>
+                    
+                    <div class="feature-card completed">
+                        <div class="feature-icon">📋</div>
+                        <h3>HTTP Request Parser</h3>
+                        <p>Full HTTP/1.1 protocol parsing with header validation</p>
+                        <div class="status-badge completed">✅ Complete</div>
+                    </div>
+                    
+                    <div class="feature-card completed">
+                        <div class="feature-icon">📁</div>
+                        <h3>Static File Serving</h3>
+                        <p>MIME type detection and efficient file serving</p>
+                        <div class="status-badge completed">✅ Complete</div>
+                    </div>
+                    
+                    <div class="feature-card in-progress">
+                        <div class="feature-icon">🧵</div>
+                        <h3>Thread Pool</h3>
+                        <p>Concurrent request processing with worker threads</p>
+                        <div class="status-badge in-progress">🔄 Next</div>
+                    </div>
+                    
+                    <div class="feature-card planned">
+                        <div class="feature-icon">⚡</div>
+                        <h3>Performance Optimization</h3>
+                        <p>Caching, compression, and keep-alive connections</p>
+                        <div class="status-badge planned">📋 Planned</div>
+                    </div>
+                    
+                    <div class="feature-card planned">
+                        <div class="feature-icon">📊</div>
+                        <h3>Monitoring & Metrics</h3>
+                        <p>Request logging and performance analytics</p>
+                        <div class="status-badge planned">📋 Planned</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Live Demo Section -->
+            <section class="demo-section">
+                <h2 class="section-title">🧪 Live Demo</h2>
+                
+                <div class="demo-container">
+                    <div class="demo-panel">
+                        <h3>Server Information</h3>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <span class="info-label">Protocol:</span>
+                                <span class="info-value">HTTP/1.1</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Port:</span>
+                                <span class="info-value" id="server-port">8081</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Document Root:</span>
+                                <span class="info-value">./public</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Build:</span>
+                                <span class="info-value">Release</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="demo-panel">
+                        <h3>Test Endpoints</h3>
+                        <div class="test-buttons">
+                            <button class="test-btn" onclick="testEndpoint('/')">
+                                Test Home Page
+                            </button>
+                            <button class="test-btn" onclick="testEndpoint('/css/style.css')">
+                                Test CSS File
+                            </button>
+                            <button class="test-btn" onclick="testEndpoint('/js/script.js')">
+                                Test JavaScript
+                            </button>
+                            <button class="test-btn" onclick="testEndpoint('/nonexistent')">
+                                Test 404 Error
+                            </button>
+                        </div>
+                        
+                        <div id="test-results" class="test-results"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Technical Details -->
+            <section class="tech-section">
+                <h2 class="section-title">⚙️ Technical Implementation</h2>
+                
+                <div class="tech-details">
+                    <div class="tech-category">
+                        <h3>🏗️ Architecture</h3>
+                        <ul>
+                            <li><strong>Modular Design:</strong> Separated HTTP parsing, file handling, and server logic</li>
+                            <li><strong>RAII Pattern:</strong> Automatic resource management</li>
+                            <li><strong>Error Handling:</strong> Comprehensive exception handling</li>
+                            <li><strong>Security:</strong> Path traversal protection</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="tech-category">
+                        <h3>🔧 Core Components</h3>
+                        <ul>
+                            <li><strong>Server Class:</strong> Main orchestration and socket management</li>
+                            <li><strong>HTTP Parser:</strong> Request parsing and validation</li>
+                            <li><strong>File Handler:</strong> Static file serving with MIME detection</li>
+                            <li><strong>Request Router:</strong> URL-based request routing</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="tech-category">
+                        <h3>📊 Performance</h3>
+                        <ul>
+                            <li><strong>Memory Efficient:</strong> Minimal memory footprint</li>
+                            <li><strong>Fast Response:</strong> Optimized file serving</li>
+                            <li><strong>Scalable Design:</strong> Ready for multithreading</li>
+                            <li><strong>Cross Platform:</strong> Works on Linux, macOS, Windows</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>🚀 Multithreaded Web Server</h4>
+                    <p>Educational C++ web server demonstrating systems programming concepts</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>🛠️ Technologies</h4>
+                    <p>C++17 • POSIX Sockets • HTTP/1.1 • CMake • Modern C++</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>📈 Status</h4>
+                    <p>Static File Serving ✅ | Multithreading 🔄 | Optimization 📋</p>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2024 C++ Web Server Project • Built for learning systems programming</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/js/script.js"></script>
+</body>
+</html>
