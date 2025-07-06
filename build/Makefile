@@ -246,6 +246,30 @@ src/handlers/FileHandler.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/webserver.dir/build.make CMakeFiles/webserver.dir/src/handlers/FileHandler.cpp.s
 .PHONY : src/handlers/FileHandler.cpp.s
 
+src/handlers/ResponseGenerator.o: src/handlers/ResponseGenerator.cpp.o
+.PHONY : src/handlers/ResponseGenerator.o
+
+# target to build an object file
+src/handlers/ResponseGenerator.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/webserver.dir/build.make CMakeFiles/webserver.dir/src/handlers/ResponseGenerator.cpp.o
+.PHONY : src/handlers/ResponseGenerator.cpp.o
+
+src/handlers/ResponseGenerator.i: src/handlers/ResponseGenerator.cpp.i
+.PHONY : src/handlers/ResponseGenerator.i
+
+# target to preprocess a source file
+src/handlers/ResponseGenerator.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/webserver.dir/build.make CMakeFiles/webserver.dir/src/handlers/ResponseGenerator.cpp.i
+.PHONY : src/handlers/ResponseGenerator.cpp.i
+
+src/handlers/ResponseGenerator.s: src/handlers/ResponseGenerator.cpp.s
+.PHONY : src/handlers/ResponseGenerator.s
+
+# target to generate assembly for a file
+src/handlers/ResponseGenerator.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/webserver.dir/build.make CMakeFiles/webserver.dir/src/handlers/ResponseGenerator.cpp.s
+.PHONY : src/handlers/ResponseGenerator.cpp.s
+
 src/http/HttpParser.o: src/http/HttpParser.cpp.o
 .PHONY : src/http/HttpParser.o
 
@@ -294,6 +318,30 @@ src/http/HttpRequest.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/webserver.dir/build.make CMakeFiles/webserver.dir/src/http/HttpRequest.cpp.s
 .PHONY : src/http/HttpRequest.cpp.s
 
+src/threading/ThreadPool.o: src/threading/ThreadPool.cpp.o
+.PHONY : src/threading/ThreadPool.o
+
+# target to build an object file
+src/threading/ThreadPool.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/webserver.dir/build.make CMakeFiles/webserver.dir/src/threading/ThreadPool.cpp.o
+.PHONY : src/threading/ThreadPool.cpp.o
+
+src/threading/ThreadPool.i: src/threading/ThreadPool.cpp.i
+.PHONY : src/threading/ThreadPool.i
+
+# target to preprocess a source file
+src/threading/ThreadPool.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/webserver.dir/build.make CMakeFiles/webserver.dir/src/threading/ThreadPool.cpp.i
+.PHONY : src/threading/ThreadPool.cpp.i
+
+src/threading/ThreadPool.s: src/threading/ThreadPool.cpp.s
+.PHONY : src/threading/ThreadPool.s
+
+# target to generate assembly for a file
+src/threading/ThreadPool.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/webserver.dir/build.make CMakeFiles/webserver.dir/src/threading/ThreadPool.cpp.s
+.PHONY : src/threading/ThreadPool.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -316,12 +364,18 @@ help:
 	@echo "... src/handlers/FileHandler.o"
 	@echo "... src/handlers/FileHandler.i"
 	@echo "... src/handlers/FileHandler.s"
+	@echo "... src/handlers/ResponseGenerator.o"
+	@echo "... src/handlers/ResponseGenerator.i"
+	@echo "... src/handlers/ResponseGenerator.s"
 	@echo "... src/http/HttpParser.o"
 	@echo "... src/http/HttpParser.i"
 	@echo "... src/http/HttpParser.s"
 	@echo "... src/http/HttpRequest.o"
 	@echo "... src/http/HttpRequest.i"
 	@echo "... src/http/HttpRequest.s"
+	@echo "... src/threading/ThreadPool.o"
+	@echo "... src/threading/ThreadPool.i"
+	@echo "... src/threading/ThreadPool.s"
 .PHONY : help
 
 

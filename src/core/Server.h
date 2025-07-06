@@ -13,6 +13,8 @@
 #include "HttpRequest.h"
 #include "HttpParser.h"
 #include "FileHandler.h"
+#include "ResponseGenerator.h"
+#include "ThreadPool.h"
 
 class Server {
 private:
@@ -21,6 +23,7 @@ private:
     struct sockaddr_in server_addr;
     bool running;
     FileHandler file_handler;  // Add file handler
+    std::unique_ptr<ThreadPool> thread_pool;  // Thread pool for handling requests
 
     
     // Helper methods
@@ -29,16 +32,10 @@ private:
     void startListening();
     void handleClient(int client_socket);
     std::string routeRequest(const HttpRequest& request);
-    std::string createSimpleResponse(const std::string& body);
-    std::string createHomePageResponse();
-    std::string createAboutPageResponse();
-    std::string createErrorResponse(int status_code, const std::string& message);
-
 
 public:
     /*Constructor & Destructor*/
     Server(int port = 8080);
-
     ~Server();
     
     void start();

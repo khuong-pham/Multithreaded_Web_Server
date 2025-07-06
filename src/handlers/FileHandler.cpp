@@ -134,6 +134,7 @@ std::string FileHandler::serveFile(const std::string& request_path) {
     // Handle root path
     std::string file_path = request_path;
     if (file_path == "/") {
+        std::cout << "[FileHandler] Root path requested, serving index.html" << std::endl;
         file_path = "/index.html";
     }
     

@@ -1,0 +1,7 @@
+/usr/local/bin/webserver
+/usr/local/include/webserver/Server.h
+/usr/local/include/webserver/FileHandler.h
+/usr/local/include/webserver/ResponseGenerator.h
+/usr/local/include/webserver/HttpParser.h
+/usr/local/include/webserver/HttpRequest.h
+/usr/local/include/webserver/ThreadPool.h

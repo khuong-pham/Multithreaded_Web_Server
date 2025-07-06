@@ -139,13 +139,43 @@ CMakeFiles/webserver.dir/src/handlers/FileHandler.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/webserver.dir/src/handlers/FileHandler.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/khuong/Backend/Project/Multithreaded_Server/src/handlers/FileHandler.cpp -o CMakeFiles/webserver.dir/src/handlers/FileHandler.cpp.s
 
+CMakeFiles/webserver.dir/src/handlers/ResponseGenerator.cpp.o: CMakeFiles/webserver.dir/flags.make
+CMakeFiles/webserver.dir/src/handlers/ResponseGenerator.cpp.o: ../src/handlers/ResponseGenerator.cpp
+CMakeFiles/webserver.dir/src/handlers/ResponseGenerator.cpp.o: CMakeFiles/webserver.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/khuong/Backend/Project/Multithreaded_Server/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/webserver.dir/src/handlers/ResponseGenerator.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/webserver.dir/src/handlers/ResponseGenerator.cpp.o -MF CMakeFiles/webserver.dir/src/handlers/ResponseGenerator.cpp.o.d -o CMakeFiles/webserver.dir/src/handlers/ResponseGenerator.cpp.o -c /home/khuong/Backend/Project/Multithreaded_Server/src/handlers/ResponseGenerator.cpp
+
+CMakeFiles/webserver.dir/src/handlers/ResponseGenerator.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/webserver.dir/src/handlers/ResponseGenerator.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/khuong/Backend/Project/Multithreaded_Server/src/handlers/ResponseGenerator.cpp > CMakeFiles/webserver.dir/src/handlers/ResponseGenerator.cpp.i
+
+CMakeFiles/webserver.dir/src/handlers/ResponseGenerator.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/webserver.dir/src/handlers/ResponseGenerator.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/khuong/Backend/Project/Multithreaded_Server/src/handlers/ResponseGenerator.cpp -o CMakeFiles/webserver.dir/src/handlers/ResponseGenerator.cpp.s
+
+CMakeFiles/webserver.dir/src/threading/ThreadPool.cpp.o: CMakeFiles/webserver.dir/flags.make
+CMakeFiles/webserver.dir/src/threading/ThreadPool.cpp.o: ../src/threading/ThreadPool.cpp
+CMakeFiles/webserver.dir/src/threading/ThreadPool.cpp.o: CMakeFiles/webserver.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/khuong/Backend/Project/Multithreaded_Server/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/webserver.dir/src/threading/ThreadPool.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/webserver.dir/src/threading/ThreadPool.cpp.o -MF CMakeFiles/webserver.dir/src/threading/ThreadPool.cpp.o.d -o CMakeFiles/webserver.dir/src/threading/ThreadPool.cpp.o -c /home/khuong/Backend/Project/Multithreaded_Server/src/threading/ThreadPool.cpp
+
+CMakeFiles/webserver.dir/src/threading/ThreadPool.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/webserver.dir/src/threading/ThreadPool.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/khuong/Backend/Project/Multithreaded_Server/src/threading/ThreadPool.cpp > CMakeFiles/webserver.dir/src/threading/ThreadPool.cpp.i
+
+CMakeFiles/webserver.dir/src/threading/ThreadPool.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/webserver.dir/src/threading/ThreadPool.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/khuong/Backend/Project/Multithreaded_Server/src/threading/ThreadPool.cpp -o CMakeFiles/webserver.dir/src/threading/ThreadPool.cpp.s
+
 # Object files for target webserver
 webserver_OBJECTS = \
 "CMakeFiles/webserver.dir/src/core/main.cpp.o" \
 "CMakeFiles/webserver.dir/src/core/Server.cpp.o" \
 "CMakeFiles/webserver.dir/src/http/HttpRequest.cpp.o" \
 "CMakeFiles/webserver.dir/src/http/HttpParser.cpp.o" \
-"CMakeFiles/webserver.dir/src/handlers/FileHandler.cpp.o"
+"CMakeFiles/webserver.dir/src/handlers/FileHandler.cpp.o" \
+"CMakeFiles/webserver.dir/src/handlers/ResponseGenerator.cpp.o" \
+"CMakeFiles/webserver.dir/src/threading/ThreadPool.cpp.o"
 
 # External object files for target webserver
 webserver_EXTERNAL_OBJECTS =
@@ -155,9 +185,11 @@ webserver: CMakeFiles/webserver.dir/src/core/Server.cpp.o
 webserver: CMakeFiles/webserver.dir/src/http/HttpRequest.cpp.o
 webserver: CMakeFiles/webserver.dir/src/http/HttpParser.cpp.o
 webserver: CMakeFiles/webserver.dir/src/handlers/FileHandler.cpp.o
+webserver: CMakeFiles/webserver.dir/src/handlers/ResponseGenerator.cpp.o
+webserver: CMakeFiles/webserver.dir/src/threading/ThreadPool.cpp.o
 webserver: CMakeFiles/webserver.dir/build.make
 webserver: CMakeFiles/webserver.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/khuong/Backend/Project/Multithreaded_Server/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Linking CXX executable webserver"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/khuong/Backend/Project/Multithreaded_Server/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Linking CXX executable webserver"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/webserver.dir/link.txt --verbose=$(VERBOSE)
 	/usr/bin/cmake -E copy_directory /home/khuong/Backend/Project/Multithreaded_Server/src/public /home/khuong/Backend/Project/Multithreaded_Server/build/public
 

@@ -2,6 +2,13 @@
 
 Server::Server(int port) : port(port), running(false), server_socket(-1), file_handler("./public") {
     std::cout << "[Server] Initializing server on port " << port << std::endl;
+
+    // Initialize thread pool with hardware concurrency size;
+    size_t thread_count = std::thread::hardware_concurrency();
+    if(thread_count == 0 ) thread_count = 4;
+
+    thread_pool = std::make_unique<ThreadPool>(thread_count);
+    std::cout << "[Server] Thread pool initialized with " << thread_count << " threads" << std::endl;
 }
 
 Server::~Server() {
@@ -88,8 +95,15 @@ void Server::start() {
             inet_ntop(AF_INET, &client_addr.sin_addr, client_ip, INET_ADDRSTRLEN);
             std::cout << "[Server] New connection from " << client_ip << std::endl;
             
-            /* Handle client request synchronous */
-            handleClient(client_socket);
+            // Handle client request using thread pool (NON BLOCKING)
+            thread_pool->enqueue([this, client_socket]() {
+                try {
+                    handleClient(client_socket);
+                } catch (const std::exception& e) {
+                    std::cerr << "[Server] Error handling client: " << e.what() << std::endl;
+                    close(client_socket);  // Ensure client socket is closed on error
+                }
+            });
         }
         
     } catch (const std::exception& e) {
@@ -115,18 +129,27 @@ void Server::handleClient(int client_socket) {
             std::cout << "[Server] Valid HTTP request parsed:" << std::endl;
             std::cout << request.toString() << std::endl;
             
-            // Route request based on path
-            std::string response = routeRequest(request);
-            
-            // Send response to client
-            send(client_socket, response.c_str(), response.length(), 0);
-            std::cout << "[Server] Response sent to client" << std::endl;
+            try {
+                // Route request and generate response
+                std::string response = routeRequest(request);
+                
+                // Send response to client
+                send(client_socket, response.c_str(), response.length(), 0);
+                std::cout << "[Server] Response sent successfully" << std::endl;
+                
+            } catch (const std::exception& e) {
+                std::cerr << "[Server] Error processing request: " << e.what() << std::endl;
+                
+                // Send 500 Internal Server Error
+                std::string error_response = ResponseGenerator::create500Response();
+                send(client_socket, error_response.c_str(), error_response.length(), 0);
+            }
             
         } else {
             std::cout << "[Server] Invalid HTTP request received" << std::endl;
             
             // Send 400 Bad Request
-            std::string error_response = createErrorResponse(400, "Bad Request");
+            std::string error_response = ResponseGenerator::create400Response();
             send(client_socket, error_response.c_str(), error_response.length(), 0);
         }
     }
@@ -134,8 +157,6 @@ void Server::handleClient(int client_socket) {
         std::cout << "[Server] No data received from client" << std::endl;
     }
 
-
-            
     // Close client connection
     close(client_socket);
     std::cout << "[Server] Client connection closed" << std::endl;
@@ -146,169 +167,48 @@ std::string Server::routeRequest(const HttpRequest& request)
     std::string path = request.getPath();
     std::cout <<"[Server] Routing request to path: " << path << std::endl;  
 
+    // Try to serve static files for everything else
     if (file_handler.canServeFile(path)) {
-        std::cout << "[Server] Serving file for path: " << path << std::endl;
+        std::cout << "[Server] Serving static file: " << path << std::endl;
         return file_handler.serveFile(path);
     }
-    
-    // Fallback to hardcoded routes for special pages
+
     if (path == "/about") {
-        return createAboutPageResponse(); 
-    } else if (path == "/") {
-        return createHomePageResponse();
-    } else {
-        return createErrorResponse(404, "Not Found");
+        std::cout << "[Server] Serving about page" << std::endl;
+        return ResponseGenerator::createAboutPageResponse(); 
+    } 
+    else if (path == "/status") {
+        std::cout << "[Server] Serving status page" << std::endl;
+        return ResponseGenerator::createStatusPageResponse(port);
     }
-}
 
-std::string Server::createHomePageResponse() 
-{
-    std::string html_body = R"(
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Home - Multithreaded Web Server</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 40px; background: #f4f4f4; }
-        .container { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        h1 { color: #333; border-bottom: 2px solid #4CAF50; padding-bottom: 10px; }
-        .info { background: #e8f5e8; padding: 15px; border-radius: 4px; margin: 20px 0; }
-        .nav { margin: 20px 0; }
-        .nav a { color: #4CAF50; text-decoration: none; margin-right: 20px; }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1> Home Page</h1>
-        <div class="nav">
-            <a href="/">Home</a>
-            <a href="/about">About</a>
-        </div>
-        <div class="info">
-            <h3> HTTP Parser Working!</h3>
-            <p>Request successfully parsed and routed!</p>
-            <p><strong>Port:</strong> )" + std::to_string(port) + R"(</p>
-        </div>
-    </div>
-</body>
-</html>)";
     
-    return createSimpleResponse(html_body);
-}
 
-std::string Server::createAboutPageResponse() {
-    std::string html_body = R"(
-<!DOCTYPE html>
-<html>
-<head>
-    <title>About - Multithreaded Web Server</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 40px; background: #f4f4f4; }
-        .container { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        h1 { color: #333; border-bottom: 2px solid #2196F3; padding-bottom: 10px; }
-        .tech { background: #f0f8ff; padding: 15px; border-radius: 4px; margin: 20px 0; }
-        .nav { margin: 20px 0; }
-        .nav a { color: #2196F3; text-decoration: none; margin-right: 20px; }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1> About Page</h1>
-        <div class="nav">
-            <a href="/">Home</a>
-            <a href="/about">About</a>
-        </div>
-        <div class="tech">
-            <h3> Technical Features</h3>
-            <ul>
-                <li> TCP Socket Programming</li>
-                <li> HTTP Request Parsing</li>
-                <li> URL Routing</li>
-                <li> Static File Serving (Next)</li>
-                <li> Multithreading (Coming)</li>
-            </ul>
-        </div>
-    </div>
-</body>
-</html>)";
-    
-    return createSimpleResponse(html_body);
-}
-
-std::string Server::createErrorResponse(int status_code, const std::string& message) {
-    std::string status_line;
-    std::string html_body;
-    
-    switch (status_code) {
-        case 404:
-            status_line = "HTTP/1.1 404 Not Found\r\n";
-            html_body = R"(
-<!DOCTYPE html>
-<html>
-<head><title>404 Not Found</title></head>
-<body>
-    <h1>404 - Page Not Found</h1>
-    <p>The requested page could not be found.</p>
-    <a href="/">Back to Home</a>
-</body>
-</html>)";
-            break;
-        case 400:
-            status_line = "HTTP/1.1 400 Bad Request\r\n";
-            html_body = R"(
-<!DOCTYPE html>
-<html>
-<head><title>400 Bad Request</title></head>
-<body>
-    <h1>400 - Bad Request</h1>
-    <p>The request could not be understood.</p>
-</body>
-</html>)";
-            break;
-        default:
-            status_line = "HTTP/1.1 500 Internal Server Error\r\n";
-            html_body = "<h1>500 - Internal Server Error</h1>";
-    }
-    
-    std::string response = status_line;
-    response += "Content-Type: text/html\r\n";
-    response += "Content-Length: " + std::to_string(html_body.length()) + "\r\n";
-    response += "Server: CustomHTTPServer/1.0\r\n";
-    response += "Connection: close\r\n";
-    response += "\r\n";
-    response += html_body;
-    
-    return response;
-}
-
-
-std::string Server::createSimpleResponse(const std::string& body) {
-    std::string response;
-    
-    response += "HTTP/1.1 200 OK\r\n";
-    
-    /* Header */
-    response += "Content-Type: text/html\r\n";
-    response += "Content-Length: " + std::to_string(body.length()) + "\r\n";
-    response += "Server: CustomHTTPServer/1.0\r\n";
-    response += "Connection: close\r\n";
-    response += "\r\n";      
-    
-    /* Body */ 
-    response += body;
-    
-    return response;
+    std::cout << "[Server] Path not found: " << path << std::endl;
+    return ResponseGenerator::create404Response();
 }
 
 void Server::stop() {
     if (running) {
         running = false;
         std::cout << "[Server] Stopping server..." << std::endl;
+        
+        // Show thread pool statistics
+        if (thread_pool) {
+            thread_pool->printStatus();
+        }
     }
     
     if (server_socket != -1) {
         close(server_socket);
         server_socket = -1;
         std::cout << "[Server] Socket closed" << std::endl;
+    }
+    
+    // Shutdown thread pool
+    if (thread_pool) {
+        std::cout << "[Server] Shutting down thread pool..." << std::endl;
+        thread_pool->shutdown();
+        std::cout << "[Server] Thread pool shut down complete" << std::endl;
     }
 }
