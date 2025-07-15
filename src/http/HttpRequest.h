@@ -37,6 +37,10 @@ public:
     bool isValid() const;
     bool hasHeader(const std::string& name) const;
     std::string toString() const;  // For debugging
+
+    // Keep-alive support
+    bool wantsKeepAlive() const;
+    bool isHttp11() const;
     
     // HTTP method helpers
     bool isGET() const { return method == "GET"; }

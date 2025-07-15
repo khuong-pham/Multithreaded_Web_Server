@@ -9,12 +9,14 @@ include_directories(src/core)
 include_directories(src/http)
 include_directories(src/handlers)
 include_directories(src/threading)
+include_directories(src/connection)
 
 file(GLOB_RECURSE HEADERS
     src/core/*.h
     src/http/*.h
     src/handlers/*.h
     src/threading/*.h
+    src/connection/*.h
 )
 
 # All source files
@@ -26,6 +28,7 @@ add_executable(webserver
     src/handlers/FileHandler.cpp
     src/handlers/ResponseGenerator.cpp
     src/threading/ThreadPool.cpp
+    src/connection/Connection.cpp
 )
  
 # Link pthread

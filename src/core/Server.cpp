@@ -1,11 +1,18 @@
 #include "Server.h"
+#include <poll.h>
+#include <fcntl.h>
 
-Server::Server(int port) : port(port), running(false), server_socket(-1), file_handler("./public") {
+
+
+Server::Server(int port) : port(port), running(false), server_socket(-1), file_handler("./public"), active_connections(0), max_keepalive_connections(100) {
     std::cout << "[Server] Initializing server on port " << port << std::endl;
 
     // Initialize thread pool with hardware concurrency size;
     size_t thread_count = std::thread::hardware_concurrency();
     if(thread_count == 0 ) thread_count = 4;
+
+    max_keepalive_connections = thread_count / 2;  // Only allow 50% of threads for keep-alive
+    if (max_keepalive_connections < 1) max_keepalive_connections = 1;
 
     thread_pool = std::make_unique<ThreadPool>(thread_count);
     std::cout << "[Server] Thread pool initialized with " << thread_count << " threads" << std::endl;
@@ -96,14 +103,18 @@ void Server::start() {
             std::cout << "[Server] New connection from " << client_ip << std::endl;
             
             // Handle client request using thread pool (NON BLOCKING)
-            thread_pool->enqueue([this, client_socket]() {
+            thread_pool->enqueue([this, client_socket, client_ip]() {
+                std::cout << "[ThreadPool] Processing connection from " << client_ip <<
+                    " on thread " << std::this_thread::get_id() << std::endl;
+                
+                auto connection = std::make_unique<Connection>(client_socket, client_ip);
                 try {
-                    handleClient(client_socket);
+                    handleConnection(std::move(connection));
                 } catch (const std::exception& e) {
-                    std::cerr << "[Server] Error handling client: " << e.what() << std::endl;
-                    close(client_socket);  // Ensure client socket is closed on error
+                    std::cerr << "[ThreadPool] Error handling client " << client_ip 
+                              << ": " << e.what() << std::endl;
                 }
-            });
+            }); 
         }
         
     } catch (const std::exception& e) {
@@ -162,6 +173,154 @@ void Server::handleClient(int client_socket) {
     std::cout << "[Server] Client connection closed" << std::endl;
 }
 
+void Server::handleConnection(std::unique_ptr<Connection> connection) {
+    // Increment active connections
+    active_connections.fetch_add(1);
+    int current_active = active_connections.load();
+    
+    std::cout << "[Server] Starting connection handling: " 
+              << connection->getStatusString() 
+              << " | Active: " << current_active << std::endl;;
+    
+    connection->setMaxRequests(5); 
+    connection->setTimeout(std::chrono::seconds(3));
+
+    auto terminate = [&](ConnectionEndReason reason) {
+        std::cout << "[Server] Terminating connection: " << reasonToString(reason) << " | " << connection->getStatusString() << std::endl;
+        connection->markForClosing();
+    };
+
+    while (connection->canContinue()) {
+        char buffer[4096] = {0};
+        connection->setState(ConnectionState::READING);
+        connection->updateActivity();
+
+        // Set socket timeout for reading (blocking read)
+        struct timeval tv;
+        tv.tv_sec = static_cast<int>(connection->getTimeout().count());
+        tv.tv_usec = 0;
+        if (setsockopt(connection->getSocketFd(), SOL_SOCKET, SO_RCVTIMEO, (const char*)&tv, sizeof(tv)) < 0) {
+            terminate(ConnectionEndReason::ReadError);
+            break;
+        }
+
+        // Read request from client (blocking, with timeout)
+        ssize_t bytes_read = read(connection->getSocketFd(), buffer, sizeof(buffer) - 1);
+        if (bytes_read == 0) {
+            terminate(ConnectionEndReason::ClientClosed);
+            break;
+        } else if (bytes_read < 0) {
+            if (errno == EAGAIN || errno == EWOULDBLOCK || errno == ETIMEDOUT) {
+                terminate(ConnectionEndReason::Timeout);
+            } else {
+                terminate(ConnectionEndReason::ReadError);
+            }
+            break;
+        }
+        connection->setState(ConnectionState::PROCESSING);
+        connection->incrementRequestCount();
+        connection->updateActivity();
+        std::string raw_request(buffer, bytes_read);
+        std::cout << "[Server] Processing request " << connection->getCurrentRequests() 
+                  << "/" << connection->getMaxRequests()     
+                  << " from " << connection->getClientIp()
+                  << " (" << bytes_read << " bytes)" << std::endl;
+
+        // Parse HTTP request
+        HttpRequest request = HttpParser::parse(raw_request);
+        if (!request.isValid()) {
+            std::cout << "[Server] Invalid HTTP request" << std::endl;
+            std::string error_response = ResponseGenerator::create400Response();
+            send(connection->getSocketFd(), error_response.c_str(), error_response.length(), 0);
+            terminate(ConnectionEndReason::BadRequest);
+            break;
+        }
+        try {
+            connection->setState(ConnectionState::WRITING);
+            std::string response = routeRequest(request);
+            bool client_wants_keepalive = request.wantsKeepAlive();
+            bool server_can_continue = connection->canContinue();
+            int current_load = active_connections.load();
+            bool traffic_allows_keepalive = (current_load <= max_keepalive_connections);
+        
+            // Final decision
+            bool use_keepalive = client_wants_keepalive && 
+                               server_can_continue && 
+                               traffic_allows_keepalive;
+
+
+           std::cout << "[Server] Keep-alive analysis:\n"
+                      << "  - Client wants: " << (client_wants_keepalive ? "yes" : "no") << std::endl
+                      << "  - Server can continue: " << (server_can_continue ? "yes" : "no") << std::endl
+                      << "  - Current load: " << current_load << "/" << max_keepalive_connections << std::endl
+                      << "  - Traffic control: " << (traffic_allows_keepalive ? "allows" : "blocks") << std::endl
+                      << "  - Max requests reached: " << (connection->hasReachedMaxRequests() ? "yes" : "no") << std::endl
+                      << "  - Final decision: " << (use_keepalive ? "KEEP-ALIVE" : "CLOSE") << std::endl;
+            
+            response = addKeepAliveHeaders(response, use_keepalive, connection.get());
+            ssize_t sent = send(connection->getSocketFd(), response.c_str(), response.length(), 0);
+            if (sent < 0) {
+                terminate(ConnectionEndReason::SendError);
+                break;
+            }
+            std::cout << "[Server] Response sent (" << sent << " bytes)" << std::endl;
+            if (!use_keepalive) {
+                ConnectionEndReason reason;
+                if (connection->hasReachedMaxRequests()) {
+                    reason = ConnectionEndReason::MaxRequests;
+                } else if (!traffic_allows_keepalive) {
+                    reason = ConnectionEndReason::KeepAliveNotAllowed;
+                } else {
+                    reason = ConnectionEndReason::KeepAliveNotAllowed;
+                }
+                terminate(reason);
+                break;
+            }
+            connection->setState(ConnectionState::KEEP_ALIVE);
+            std::cout << "[Server] Connection status: " << connection->getStatusString() << std::endl;
+            std::cout << "[Server] Waiting for next request (timeout in " 
+                      << connection->getTimeout().count() << "s)..." << std::endl;
+        } catch (const std::exception& e) {
+            std::cerr << "[Server] Error processing request: " << e.what() << std::endl;
+            std::string error_response = ResponseGenerator::create500Response();
+            send(connection->getSocketFd(), error_response.c_str(), error_response.length(), 0);
+            terminate(ConnectionEndReason::Exception);
+            break;
+        }
+    }
+    connection->setState(ConnectionState::CLOSING);
+
+    active_connections.fetch_sub(1);
+    int remaining_active = active_connections.load();
+    
+    std::cout << "[Server] Keep-alive connection ended: " << connection->getStatusString() 
+              << " | Remaining active: " << remaining_active << std::endl;
+
+   
+}
+
+std::string Server::addKeepAliveHeaders(const std::string& response, bool keep_alive, const Connection* connection) {
+    // Find the end of headers (empty line)
+    size_t headers_end = response.find("\r\n\r\n");
+    if (headers_end == std::string::npos) {
+        return response;  // Malformed response
+    }
+    
+    std::string headers = response.substr(0, headers_end);
+    std::string body = response.substr(headers_end);
+    
+    // Add keep-alive headers
+    if (keep_alive) {
+        headers += "\r\nConnection: keep-alive";
+        headers += "\r\nKeep-Alive: timeout=" + std::to_string(connection->getTimeout().count()) + 
+                   ", max=" + std::to_string(connection->getMaxRequests());
+    } else {
+        headers += "\r\nConnection: close";
+    }
+    
+    return headers + body;
+}
+
 std::string Server::routeRequest(const HttpRequest& request)
 {
     std::string path = request.getPath();
@@ -186,6 +345,21 @@ std::string Server::routeRequest(const HttpRequest& request)
 
     std::cout << "[Server] Path not found: " << path << std::endl;
     return ResponseGenerator::create404Response();
+}
+
+// Helper function to convert ConnectionEndReason to string
+std::string Server::reasonToString(ConnectionEndReason reason) {
+    switch (reason) {
+        case ConnectionEndReason::ClientClosed: return "CLIENT_CLOSED";
+        case ConnectionEndReason::Timeout: return "TIMEOUT";
+        case ConnectionEndReason::ReadError: return "READ_ERROR";
+        case ConnectionEndReason::SendError: return "SEND_ERROR";
+        case ConnectionEndReason::BadRequest: return "BAD_REQUEST";
+        case ConnectionEndReason::Exception: return "EXCEPTION";
+        case ConnectionEndReason::MaxRequests: return "MAX_REQUESTS";
+        case ConnectionEndReason::KeepAliveNotAllowed: return "KEEPALIVE_NOT_ALLOWED";
+        default: return "UNKNOWN";
+    }
 }
 
 void Server::stop() {

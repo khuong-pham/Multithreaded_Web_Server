@@ -174,6 +174,30 @@ webserver/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/webserver.dir/build.make CMakeFiles/webserver.dir/build
 .PHONY : webserver/fast
 
+src/connection/Connection.o: src/connection/Connection.cpp.o
+.PHONY : src/connection/Connection.o
+
+# target to build an object file
+src/connection/Connection.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/webserver.dir/build.make CMakeFiles/webserver.dir/src/connection/Connection.cpp.o
+.PHONY : src/connection/Connection.cpp.o
+
+src/connection/Connection.i: src/connection/Connection.cpp.i
+.PHONY : src/connection/Connection.i
+
+# target to preprocess a source file
+src/connection/Connection.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/webserver.dir/build.make CMakeFiles/webserver.dir/src/connection/Connection.cpp.i
+.PHONY : src/connection/Connection.cpp.i
+
+src/connection/Connection.s: src/connection/Connection.cpp.s
+.PHONY : src/connection/Connection.s
+
+# target to generate assembly for a file
+src/connection/Connection.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/webserver.dir/build.make CMakeFiles/webserver.dir/src/connection/Connection.cpp.s
+.PHONY : src/connection/Connection.cpp.s
+
 src/core/Server.o: src/core/Server.cpp.o
 .PHONY : src/core/Server.o
 
@@ -355,6 +379,9 @@ help:
 	@echo "... list_install_components"
 	@echo "... rebuild_cache"
 	@echo "... webserver"
+	@echo "... src/connection/Connection.o"
+	@echo "... src/connection/Connection.i"
+	@echo "... src/connection/Connection.s"
 	@echo "... src/core/Server.o"
 	@echo "... src/core/Server.i"
 	@echo "... src/core/Server.s"

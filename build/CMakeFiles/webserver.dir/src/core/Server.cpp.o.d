@@ -222,4 +222,11 @@ CMakeFiles/webserver.dir/src/core/Server.cpp.o: \
  /usr/include/c++/11/bits/uniform_int_dist.h /usr/include/c++/11/future \
  /usr/include/c++/11/atomic /usr/include/c++/11/bits/atomic_base.h \
  /usr/include/c++/11/bits/atomic_lockfree_defines.h \
- /usr/include/c++/11/bits/atomic_futex.h
+ /usr/include/c++/11/bits/atomic_futex.h \
+ /home/khuong/Backend/Project/Multithreaded_Server/src/connection/Connection.h \
+ /usr/include/poll.h /usr/include/x86_64-linux-gnu/sys/poll.h \
+ /usr/include/x86_64-linux-gnu/bits/poll.h /usr/include/fcntl.h \
+ /usr/include/x86_64-linux-gnu/bits/fcntl.h \
+ /usr/include/x86_64-linux-gnu/bits/fcntl-linux.h \
+ /usr/include/linux/falloc.h /usr/include/x86_64-linux-gnu/bits/stat.h \
+ /usr/include/x86_64-linux-gnu/bits/struct_stat.h

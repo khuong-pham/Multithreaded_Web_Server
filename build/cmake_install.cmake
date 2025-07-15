@@ -58,17 +58,6 @@ if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_
   endif()
 endif()
 
-if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/include/webserver" TYPE FILE FILES
-    "/home/khuong/Backend/Project/Multithreaded_Server/src/core/Server.h"
-    "/home/khuong/Backend/Project/Multithreaded_Server/src/handlers/FileHandler.h"
-    "/home/khuong/Backend/Project/Multithreaded_Server/src/handlers/ResponseGenerator.h"
-    "/home/khuong/Backend/Project/Multithreaded_Server/src/http/HttpParser.h"
-    "/home/khuong/Backend/Project/Multithreaded_Server/src/http/HttpRequest.h"
-    "/home/khuong/Backend/Project/Multithreaded_Server/src/threading/ThreadPool.h"
-    )
-endif()
-
 if(CMAKE_INSTALL_COMPONENT)
   set(CMAKE_INSTALL_MANIFEST "install_manifest_${CMAKE_INSTALL_COMPONENT}.txt")
 else()

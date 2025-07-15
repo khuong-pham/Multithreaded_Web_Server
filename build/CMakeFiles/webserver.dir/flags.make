@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/c++
 CXX_DEFINES = 
 
-CXX_INCLUDES = -I/home/khuong/Backend/Project/Multithreaded_Server/src -I/home/khuong/Backend/Project/Multithreaded_Server/src/core -I/home/khuong/Backend/Project/Multithreaded_Server/src/http -I/home/khuong/Backend/Project/Multithreaded_Server/src/handlers -I/home/khuong/Backend/Project/Multithreaded_Server/src/threading
+CXX_INCLUDES = -I/home/khuong/Backend/Project/Multithreaded_Server/src -I/home/khuong/Backend/Project/Multithreaded_Server/src/core -I/home/khuong/Backend/Project/Multithreaded_Server/src/http -I/home/khuong/Backend/Project/Multithreaded_Server/src/handlers -I/home/khuong/Backend/Project/Multithreaded_Server/src/threading -I/home/khuong/Backend/Project/Multithreaded_Server/src/connection
 
 CXX_FLAGS = 
 

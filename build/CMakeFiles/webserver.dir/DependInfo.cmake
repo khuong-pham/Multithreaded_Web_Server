@@ -8,6 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
+  "/home/khuong/Backend/Project/Multithreaded_Server/src/connection/Connection.cpp" "CMakeFiles/webserver.dir/src/connection/Connection.cpp.o" "gcc" "CMakeFiles/webserver.dir/src/connection/Connection.cpp.o.d"
   "/home/khuong/Backend/Project/Multithreaded_Server/src/core/Server.cpp" "CMakeFiles/webserver.dir/src/core/Server.cpp.o" "gcc" "CMakeFiles/webserver.dir/src/core/Server.cpp.o.d"
   "/home/khuong/Backend/Project/Multithreaded_Server/src/core/main.cpp" "CMakeFiles/webserver.dir/src/core/main.cpp.o" "gcc" "CMakeFiles/webserver.dir/src/core/main.cpp.o.d"
   "/home/khuong/Backend/Project/Multithreaded_Server/src/handlers/FileHandler.cpp" "CMakeFiles/webserver.dir/src/handlers/FileHandler.cpp.o" "gcc" "CMakeFiles/webserver.dir/src/handlers/FileHandler.cpp.o.d"

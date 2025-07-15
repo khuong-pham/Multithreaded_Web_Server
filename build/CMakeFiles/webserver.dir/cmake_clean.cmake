@@ -1,4 +1,6 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/webserver.dir/src/connection/Connection.cpp.o"
+  "CMakeFiles/webserver.dir/src/connection/Connection.cpp.o.d"
   "CMakeFiles/webserver.dir/src/core/Server.cpp.o"
   "CMakeFiles/webserver.dir/src/core/Server.cpp.o.d"
   "CMakeFiles/webserver.dir/src/core/main.cpp.o"

@@ -15,6 +15,7 @@
 #include "FileHandler.h"
 #include "ResponseGenerator.h"
 #include "ThreadPool.h"
+#include "Connection.h"
 
 class Server {
 private:
@@ -25,13 +26,22 @@ private:
     FileHandler file_handler;  // Add file handler
     std::unique_ptr<ThreadPool> thread_pool;  // Thread pool for handling requests
 
-    
+    // High traffic control
+    std::atomic<int> active_connections;
+    int max_keepalive_connections;
+
     // Helper methods
     void setupSocket();
     void bindSocket();
     void startListening();
     void handleClient(int client_socket);
+    void handleConnection(std::unique_ptr<Connection> connection);       
     std::string routeRequest(const HttpRequest& request);
+    std::string addKeepAliveHeaders(const std::string& response, bool keep_alive, const Connection* connection);
+    std::string reasonToString(ConnectionEndReason reason);
+    int getActiveConnections() const { return active_connections.load(); }
+    int getMaxKeepAliveConnections() const { return max_keepalive_connections; }
+
 
 public:
     /*Constructor & Destructor*/

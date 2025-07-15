@@ -69,3 +69,24 @@ std::string HttpRequest::toString() const {
     
     return oss.str();
 }
+
+bool HttpRequest::wantsKeepAlive() const{
+    // Check Connection header for keep-alive
+    std::string connection = getHeader("Connection");
+    if(!connection.empty())
+    {
+        std::transform(connection.begin(), connection.end(), connection.begin(), ::tolower);
+        return connection.find("keep-alive") != std::string::npos;
+    }
+
+    // Default to HTTP/1.1 keep-alive
+    if(isHttp11()) {
+        return true;
+    }
+
+    return false;
+}
+
+bool HttpRequest::isHttp11() const {
+    return version == "HTTP/1.1";
+}
